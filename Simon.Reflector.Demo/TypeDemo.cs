@@ -9,13 +9,38 @@ namespace Simon.Reflector.Demo
 {
     /// <summary>
     /// 反射包含的Info对象：
-    /// ConstructorInfo
-    /// EventInfo
-    /// FieldInfo
-    /// MemberInfo
-    /// MethodInfo
+    /// MemberInfo:EventInfo/FieldInfo/PropertyInfo
+    /// MethodBase(derived from MemberInfo):ConstructorInfo/MethodInfo
     /// ParametorInfo
-    /// PropertyInfo
+    /// ======================
+    /// [BindingFlags]
+    /// Identified by Accessibility:
+    /// ============================
+    /// DeclaredOnly
+    /// FlattenHierarchy
+    /// IgnoreCase
+    /// IgnoreReturen
+    /// Instance
+    /// NonPublic
+    /// Public
+    /// Static
+    /// 
+    /// Identified by Binding Argument:
+    /// ==============================
+    /// ExactBinding
+    /// OptionalParamBinding
+    /// 
+    /// Identified by Operation:
+    /// ==============================
+    /// CreateInstance
+    /// GetField
+    /// SetField
+    /// GetProperty
+    /// SetProperty
+    /// InvokeMethod
+    /// PutDispProperty
+    /// PutRefDispProperty
+    /// Note:必须与Public或NonPublic一起制定Instance或Static，否则不返回成员
     /// </summary>
     public class TypeDemo
     {
@@ -220,6 +245,7 @@ namespace Simon.Reflector.Demo
                 new object[] { "simon", "30" });
 
             EventInfo ei = t.GetEvent("OnChange", BindingFlags.Public | BindingFlags.Instance);
+            //通过反射添加事件处理方法
             ei.AddEventHandler(o, 
                 new EventHandler((sender, e) => 
                 { 
@@ -228,8 +254,9 @@ namespace Simon.Reflector.Demo
             //StrongNameClass instance = o as StrongNameClass;
             //instance.Change();
 
+            //通过委托出发事件
             FieldInfo fi = t.GetField("OnChange",
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                BindingFlags.Public | BindingFlags.Instance);
             Delegate d = fi.GetValue(o) as Delegate;
             if (d != null)
             {
